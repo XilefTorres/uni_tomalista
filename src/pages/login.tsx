@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export default function Login() {
+type LoginProps = {
+    setLogin: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function Login({setLogin} : LoginProps) {
 
     const [password, setPassword] = useState("");
     const [displayPassword, setDisplayPassword] = useState("");
@@ -29,6 +33,7 @@ export default function Login() {
             <div className="flex flex-col gap-5 justify-center items-center h-screen">
                 <img className="size-30" 
                 src="src/assets/conta-logo.png"></img>
+                
                 <div className="bg-white min-w-2/6 h-3/6 min-h-90 rounded-4xl">
                     <h1 className="font-bold p-5 text-2xl text-center">Iniciar Sesion</h1>
                     <div className="grid grid-cols-1 gap-5 px-5">
@@ -42,7 +47,8 @@ export default function Login() {
                         <a className="text-red-600">Usuario o contraseña incorrectas</a>
                     </div>
                     <button className="bg-green-300 hover:bg-green-500 
-                            w-28 m-5 py-2 rounded-2xl text-sm">Ingresar</button>
+                            w-28 m-5 py-2 rounded-2xl text-sm"
+                            onClick={() => setLogin(true)}>Ingresar</button>
                 </div>
             </div>
         </>
