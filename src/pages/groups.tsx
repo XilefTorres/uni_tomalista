@@ -41,11 +41,11 @@ export default function Groups({setOpenRecord}: GroupsProps){
                 <h1 className="text-center font-bold text-xl">Agregar Grupo</h1>
                 <div className="my-5 grid grid-cols-1 gap-4 font-semibold text-lg">
                     <a>Materia:</a>
-                    <input className="border-2 rounded-xl"/>
+                    <input className="border-2 rounded-xl p-1"/>
                     <a>Semestre:</a>
-                    <input className="border-2 rounded-xl"/>
+                    <input className="border-2 rounded-xl p-1"/>
                     <a>Turno:</a>
-                    <input className="border-2 rounded-xl"/>
+                    <input className="border-2 rounded-xl p-1"/>
                     <a>Horario:</a>
                 </div>
                 <div className="absolute bottom-0 grid grid-cols-2">

@@ -36,11 +36,11 @@ export default function Login({setLogin} : LoginProps) {
                 
                 <div className="bg-white min-w-2/6 h-3/6 min-h-90 rounded-4xl">
                     <h1 className="font-bold p-5 text-2xl text-center">Iniciar Sesion</h1>
-                    <div className="grid grid-cols-1 gap-5 px-5">
+                    <div className="grid grid-cols-1 gap-4 px-5">
                         <a className="font-medium">Usuario:</a>
-                        <input className="border-2 rounded-xl"></input>
+                        <input className="border-2 rounded-xl p-1"></input>
                         <a className="font-medium">Contraseña:</a>
-                        <input className="border-2 rounded-xl" 
+                        <input className="border-2 rounded-xl p-1" 
                             type="text"
                             value={displayPassword}
                             onChange={handleChange}/>
