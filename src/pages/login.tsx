@@ -1,4 +1,5 @@
 import { useState } from "react";
+import getFetch from "../functions/getFetch";
 
 type LoginProps = {
     setLogin: React.Dispatch<React.SetStateAction<boolean>>
@@ -48,7 +49,7 @@ export default function Login({setLogin} : LoginProps) {
                     </div>
                     <button className="bg-green-300 hover:bg-green-500 
                             w-28 m-5 py-2 rounded-2xl text-sm"
-                            onClick={() => setLogin(true)}>Ingresar</button>
+                            onClick={() => getFetch("grupos", setLogin)}>Ingresar</button>
                 </div>
             </div>
         </>

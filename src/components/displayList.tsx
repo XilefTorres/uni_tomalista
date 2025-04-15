@@ -1,13 +1,16 @@
+import getFetch from "../functions/getFetch"
+
 type DisplayListProps = {
     setOpenList: React.Dispatch<React.SetStateAction<boolean>>
+    date: string
 }
 
-export default function DisplayList({setOpenList}: DisplayListProps){
+export default function DisplayList({setOpenList, date}: DisplayListProps){
     return(
         <>
             <button className="bg-white hover:bg-gray-300 h-12 w-5/6 mb-1 max-w-200 border-2"
-                    onClick={() => setOpenList(true)}>
-                Martes 25 de marzo del 2025</button>
+                    onClick={() => getFetch("alumnos", setOpenList)}>
+                {date}</button>
         </>
     )
 }

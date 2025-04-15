@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+button{
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function) /* cubic-bezier(0.4, 0, 0.2, 1) */);
+    transition-duration: var(--tw-duration, var(--default-transition-duration) /* 150ms */);
+
+    --tw-duration: 300ms;
+    transition-duration: 300ms;
+    @property --tw-duration {
+        syntax: "*";
+        inherits: false;
+    }
+
+    &:hover {
+        @media (hover: hover) {
+            --tw-scale-x: 110%;
+            --tw-scale-y: 110%;
+            --tw-scale-z: 110%;
+            scale: var(--tw-scale-x) var(--tw-scale-y);
+        }
+    }
+}
+@property --tw-scale-x {
+    syntax: "*";
+    inherits: false;
+    initial-value: 1;
+}
+@property --tw-scale-y {
+    syntax: "*";
+    inherits: false;
+    initial-value: 1;
+}
+@property --tw-scale-z {
+    syntax: "*";
+    inherits: false;
+    initial-value: 1;
+}
