@@ -9,6 +9,7 @@ export type Student = {
     idGroup: Group["id_grupo"],
     matricula_Alumnos: number,
     nombre_Alumnos: string
+    asistencia: boolean
 }
 
 export type Attendace = {
@@ -20,5 +21,6 @@ export type Attendace = {
 
 export type Class = {
     id_grupo: Group["id_grupo"],
+    nombre_grupo: string
     fecha: string
 }

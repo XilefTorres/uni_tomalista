@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ClassesDB, GroupsDB } from "../db/classDB"
+import { ClassesDB } from "../db/classDB"
 import { Group } from "../types/class"
 import ReactModal from 'react-modal';
 
@@ -11,17 +11,22 @@ type DisplayGroups = {
 }
 
 export default function DisplayGroups({cancel, setOpenRecord, group, getGroups} : DisplayGroups) {
-    
+
+    const Class = {
+        id_grupo: group.id_grupo,
+        nombre_grupo: group.nombre_Grupo,
+        fecha: new Date().toISOString()
+    }    
+
     const[modalIsOpen, SetIsOpen] = useState(false)
-        
-        function closeModal(){
-            SetIsOpen(false)
-        }
+    function closeModal(){
+        SetIsOpen(false)
+    }
 
     const getDates = (parameter: string, setState: React.Dispatch<React.SetStateAction<boolean>>,) => {
-       ClassesDB.length = 0
+        ClassesDB.length = 0
         
-        fetch('http://localhost:3000/api/' + parameter)
+        fetch('http://localhost:3000/api/' + parameter, {credentials: 'include'})
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la petición: ' + response.status);
@@ -31,19 +36,20 @@ export default function DisplayGroups({cancel, setOpenRecord, group, getGroups} 
             .then(data => {
                 ClassesDB.push(...data)
 
-                setState(true)
             })
             .catch(error => {
                 console.error('Hubo un problema con la petición fetch:', error);
             });
-    }
+            setState(true)
+        }
 
     const deleteGroup = (id_grupo: number) => {
         fetch('http://localhost:3000/api/grupos/' + id_grupo, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-            }})
+            },
+            credentials: 'include'})
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la petición: ' + response.status);
@@ -74,7 +80,10 @@ export default function DisplayGroups({cancel, setOpenRecord, group, getGroups} 
                     className="bg-white hover:bg-gray-300 w-xs h-2xl p-3
                             rounded-2xl text-center border-l-7 border-t-5
                             grid grid-cols-1"
-                    onClick={() => getDates("asistencias/grupo/fechas/" + group.id_grupo, setOpenRecord)}
+                    onClick={() => {
+                        getDates("asistencias/grupo/fechas/" + group.id_grupo, setOpenRecord)
+                        ClassesDB.push(Class)
+                    }}
                 >
                     <a className="text-xl font-semibold">Materia</a>
                     <a className="text-lg font-semibold">{group.nombre_Grupo}</a>

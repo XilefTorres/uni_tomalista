@@ -10,6 +10,10 @@ export default function Login({setLogin} : LoginProps) {
     const [password, setPassword] = useState("");
     const [displayPassword, setDisplayPassword] = useState("");
 
+    const [user, setUser] = useState("");
+
+    const [error, setError] = useState(false)
+
     const handleChange = (e : any) => {
         const value = e.target.value; //e es el valor de todo el input
 
@@ -29,27 +33,69 @@ export default function Login({setLogin} : LoginProps) {
         }
     };
 
+    const handleChangeUser = (e : any) => {
+        const value = e.target.value; //e es el valor de todo el input
+
+        setUser(value)
+    };
+
+    const login = () => {
+        
+        fetch('http://localhost:3000/login/usuario', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "nombre_Usuario": user,
+                "contraseña_Usuario": password
+            }),
+            credentials: 'include'})
+            .then(response => {
+                if (!response.ok) {
+                    setError(true)
+                    throw new Error('Error en la petición: ' + response.status);
+                }
+                return response.json(); // o response.text() si no es JSON
+            })
+            .then(data => {
+                console.log('Login exitoso:', data.message);
+                
+                getFetch("grupos", setLogin)
+            })
+            .catch(error => {
+                console.error('Hubo un problema con la petición fetch:', error);
+                setError(true)
+            });
+    }
+
     return (
         <>
             <div className="flex flex-col gap-5 justify-center items-center h-screen">
                 <img className="size-30" 
                 src="src/assets/conta-logo.png"></img>
                 
-                <div className="bg-white min-w-2/6 h-3/6 min-h-90 rounded-4xl">
+                <div className="bg-white min-w-2/6 h-3/6 min-h-90 rounded-4xl
+                                grid grid-cols-1">
                     <h1 className="font-bold p-5 text-2xl text-center">Iniciar Sesion</h1>
                     <div className="grid grid-cols-1 gap-4 px-5">
                         <a className="font-medium">Usuario:</a>
-                        <input className="border-2 rounded-xl p-1"></input>
+                        <input className="border-2 rounded-xl p-1"
+                                type="text"
+                                value={user}
+                                onChange={handleChangeUser}></input>
                         <a className="font-medium">Contraseña:</a>
                         <input className="border-2 rounded-xl p-1" 
                             type="text"
                             value={displayPassword}
                             onChange={handleChange}/>
-                        <a className="text-red-600">Usuario o contraseña incorrectas</a>
+                        <a className={`text-red-600 ${error ? 'visible' : 'invisible'}`}>Usuario o contraseña incorrectas</a>
                     </div>
-                    <button className="bg-green-300 hover:bg-green-500 
-                            w-28 m-5 py-2 rounded-2xl text-sm"
-                            onClick={() => getFetch("grupos", setLogin)}>Ingresar</button>
+                    <div className="">
+                        <button className="bg-green-300 hover:bg-green-500 
+                                w-28 m-5 py-2 rounded-2xl text-sm float-end"
+                                onClick={() => login()}>Ingresar</button>
+                    </div>
                 </div>
             </div>
         </>

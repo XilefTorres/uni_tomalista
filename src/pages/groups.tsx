@@ -31,7 +31,6 @@ export default function Groups({setOpenRecord}: GroupsProps){
         }))
     }
 
-
     const postGroup = (groupName: string, career: string, shift: string) => {
         console.log(groupName + " " + career + " " + shift) 
         
@@ -44,7 +43,8 @@ export default function Groups({setOpenRecord}: GroupsProps){
                 "nombre_Grupo": groupName,
                 "carrera_Grupo": career,
                 "turno_Grupo": shift
-            })})
+            }),
+            credentials: 'include'})
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la petición: ' + response.status);
@@ -59,10 +59,9 @@ export default function Groups({setOpenRecord}: GroupsProps){
     }
     
     const getGroups = () => {
-        console.log(GroupsDB)
         GroupsDB.length = 0
-        console.log(GroupsDB)
-        fetch('http://localhost:3000/api/grupos')
+        
+        fetch('http://localhost:3000/api/grupos', {credentials: 'include'})
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la petición: ' + response.status);
@@ -76,7 +75,6 @@ export default function Groups({setOpenRecord}: GroupsProps){
             .catch(error => {
                 console.error('Hubo un problema con la petición fetch:', error);
             });
-
     }
 
     return (

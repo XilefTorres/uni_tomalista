@@ -3,7 +3,9 @@ import { GroupsDB, StudentsDB, AttendaceDB } from "../db/classDB";
 export default function getFetch(parameter: string, setState: React.Dispatch<React.SetStateAction<boolean>>) {
     StudentsDB.length = 0
     
-    fetch('http://localhost:3000/api/' + parameter)
+    fetch('http://localhost:3000/api/' + parameter, {
+        credentials: 'include'
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error en la petición: ' + response.status);
