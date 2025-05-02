@@ -3,6 +3,7 @@ export type Group = {
     id_grupo: number,
     nombre_Grupo: string,
     turno_Grupo: string
+    materia: string
 }
 
 export type Student = {

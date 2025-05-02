@@ -10,12 +10,18 @@ type DisplayGroups = {
     getGroups: () => void
 }
 
+type ClaseDelServidor = {
+    id_grupo: string;
+    nombre_grupo: string;
+    fecha: { fecha: string };
+  };
+
 export default function DisplayGroups({cancel, setOpenRecord, group, getGroups} : DisplayGroups) {
 
     const Class = {
         id_grupo: group.id_grupo,
         nombre_grupo: group.nombre_Grupo,
-        fecha: new Date().toISOString()
+        fecha: new Date().toISOString().slice(0,10)
     }    
 
     const[modalIsOpen, SetIsOpen] = useState(false)
@@ -23,25 +29,39 @@ export default function DisplayGroups({cancel, setOpenRecord, group, getGroups} 
         SetIsOpen(false)
     }
 
-    const getDates = (parameter: string, setState: React.Dispatch<React.SetStateAction<boolean>>,) => {
+    const getDates = async (parameter: string) => {
         ClassesDB.length = 0
         
-        fetch('http://localhost:3000/api/' + parameter, {credentials: 'include'})
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error en la petición: ' + response.status);
-                }
-                return response.json(); // o response.text() si no es JSON
-            })
-            .then(data => {
-                ClassesDB.push(...data)
+        try {
+            const response = await fetch('http://localhost:3000/api/asistencias/grupo/fechas/' + parameter, { credentials: 'include' });
+            if (!response.ok) throw new Error('Error en la petición: ' + response.status);
+    
+            const data = await response.json();
+            const transformedData = data.map((i: ClaseDelServidor) => ({
+                id_grupo: group.id_grupo.toString(),
+                nombre_grupo: group.nombre_Grupo,
+                fecha: i.fecha
+            }));
+    
+            ClassesDB.push(...transformedData);
 
-            })
-            .catch(error => {
-                console.error('Hubo un problema con la petición fetch:', error);
-            });
-            setState(true)
+            console.log(ClassesDB)
+
+            if (ClassesDB.length === 0 || ClassesDB[ClassesDB.length - 1].fecha.slice(0,10) !== new Date().toISOString().slice(0,10)) {
+                ClassesDB.push(Class);
+            }
+        } catch (error) {
+            console.error('Hubo un problema con la petición fetch:', error);
         }
+    }
+
+    const goToRecord = async () => {
+        await getDates(group.id_grupo.toString());
+
+        console.log(new Date().toISOString().slice(0,10))
+
+        setOpenRecord(true);
+    }
 
     const deleteGroup = (id_grupo: number) => {
         fetch('http://localhost:3000/api/grupos/' + id_grupo, {
@@ -63,6 +83,7 @@ export default function DisplayGroups({cancel, setOpenRecord, group, getGroups} 
             });
     }
 
+
     return (
         <>
             <div className="relative inline-block">
@@ -80,12 +101,9 @@ export default function DisplayGroups({cancel, setOpenRecord, group, getGroups} 
                     className="bg-white hover:bg-gray-300 w-xs h-2xl p-3
                             rounded-2xl text-center border-l-7 border-t-5
                             grid grid-cols-1"
-                    onClick={() => {
-                        getDates("asistencias/grupo/fechas/" + group.id_grupo, setOpenRecord)
-                        ClassesDB.push(Class)
-                    }}
+                    onClick={() => { goToRecord() }}
                 >
-                    <a className="text-xl font-semibold">Materia</a>
+                    <a className="text-xl font-semibold">{group.materia}</a>
                     <a className="text-lg font-semibold">{group.nombre_Grupo}</a>
                     <a className="font-semibold">{group.turno_Grupo}</a>
                 </button>

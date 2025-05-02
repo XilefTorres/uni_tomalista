@@ -3,12 +3,11 @@ import { ClassesDB, StudentsDB } from "../db/classDB";
 import { Student } from "../types/class";
 
 type RecordProps = {
-    group: string,
     setOpenRecord: React.Dispatch<React.SetStateAction<boolean>>
     setOpenList: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function Record({group, setOpenRecord, setOpenList}: RecordProps) {
+export default function Record({setOpenRecord, setOpenList}: RecordProps) {
 
     const getStudents = (group: string, setState: React.Dispatch<React.SetStateAction<boolean>>) => {
         StudentsDB.length = 0
@@ -43,13 +42,13 @@ export default function Record({group, setOpenRecord, setOpenList}: RecordProps)
                         onClick={() => setOpenRecord(false)}>Retroceder</button>
                 <button className="bg-green-300 hover:bg-green-500 
                                 w-25 my-5 mr-3 py-2 rounded-2xl text-sm"
-                        onClick={() => getStudents(group, setOpenList)}>Agregar</button>
+                        onClick={() => getStudents(ClassesDB[0].nombre_grupo, setOpenList)}>Agregar</button>
                 <button className="bg-red-300 hover:bg-red-500 
                                 w-25 mr-5 py-2 rounded-2xl text-sm">Eliminar</button>
             </div>
 
             <h1 className="text-center mb-3 text-3xl font-bold">
-                Historial del {ClassesDB[0].nombre_grupo}</h1>
+                Historial</h1>
             <div className="text-center">
                 {ClassesDB.map((i, index) => (
                     <DisplayList

@@ -1,7 +1,8 @@
 import { useState } from "react"
 import DisplayStudents from "../components/displayStudents"
-import { ClassesDB, StudentsDB } from "../db/classDB"
+import { ClassesDB, GroupsDB, StudentsDB } from "../db/classDB"
 import ReactModal from "react-modal"
+import Groups from "./groups"
 
 type StudentsListprops = {
     setOpenList: React.Dispatch<React.SetStateAction<boolean>>
@@ -21,17 +22,13 @@ export default function StudentsList({setOpenList}: StudentsListprops) {
         );
       };
 
-      const AttendanceBody = {
-        //lo convertimos en un objeto pq no acepta directamente un arreglo
-        //ya que map hace un arreglo
-        asistencias: students.map((i) => ({
-          matricula_AlumnosAsis: i.matricula_Alumnos,
-          id_grupoAsis: i.idGroup,
-          fecha: new Date().toISOString().slice(0, 10),
-          estado: i.asistencia ? 1 : 0,
-          justificado: 0
-        }))
-      };
+      const AttendanceBody = students.map((i) => ({
+        matricula_AlumnosAsis: i.matricula_Alumnos,
+        id_grupoAsis: i.idGroup,
+        fecha: new Date().toISOString().slice(0, 10),
+        estado: i.asistencia ? 'Asistencia' : 'Falta',
+        justificado: 0
+      }))
 
     const PostAttendance = () => {
         
@@ -42,11 +39,12 @@ export default function StudentsList({setOpenList}: StudentsListprops) {
             },
             body: JSON.stringify(AttendanceBody),
             credentials: 'include'
-        })
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error en la petición: ' + response.status);
                 }
+                console.log(AttendanceBody)
                 return response.json(); // o response.text() si no es JSON
             })
             .catch(error => {
@@ -99,6 +97,47 @@ export default function StudentsList({setOpenList}: StudentsListprops) {
             });
     }
 
+    const grupo = ClassesDB[0];
+
+    if (!grupo) {
+        throw new Error("Grupo no encontrado");
+      }
+
+    const Class = {
+        id_grupo: grupo.id_grupo,
+        nombre_grupo: grupo.nombre_grupo,
+        fecha: new Date().toISOString()
+    }    
+
+    const backToRecord = () => {
+        getDates(grupo.id_grupo.toString())
+
+        if(ClassesDB.length == 0){
+            ClassesDB.push(Class)
+        }
+
+        setOpenList(false)
+    }
+
+    const getDates = (parameter: string) => {
+        ClassesDB.length = 0
+        
+        fetch('http://localhost:3000/api/asistencias/grupo/fechas/' + parameter, {credentials: 'include'})
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la petición: ' + response.status);
+                }
+                return response.json(); // o response.text() si no es JSON
+            })
+            .then(data => {
+                ClassesDB.push(...data)
+
+            })
+            .catch(error => {
+                console.error('Hubo un problema con la petición fetch:', error);
+            });
+        }
+
     const getStudents = () => {
             StudentsDB.length = 0
             
@@ -123,7 +162,7 @@ export default function StudentsList({setOpenList}: StudentsListprops) {
             <div className=" text-end">
                 <button className="bg-green-300 hover:bg-green-500 float-start 
                                     w-25 my-5 ml-5 py-2 rounded-2xl text-sm"
-                        onClick={() => setOpenList(false)}>Retroceder</button>
+                        onClick={() => backToRecord()}>Retroceder</button>
                 <button className="bg-green-300 hover:bg-green-500 
                                 w-25 my-5 mr-3 py-2 rounded-2xl text-sm"
                         onClick={() => SetIsOpen(true)}

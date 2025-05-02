@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import getFetch from "../functions/getFetch";
 
 type LoginProps = {
@@ -7,32 +7,49 @@ type LoginProps = {
 
 export default function Login({setLogin} : LoginProps) {
 
-    const [password, setPassword] = useState("");
-    const [displayPassword, setDisplayPassword] = useState("");
+    const [password, setPassword] = useState('');
+  const [displayPassword, setDisplayPassword] = useState('');
+  const timeoutRef = useRef<number | null>(null);
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+  
+    // Si está vacía, se borró todo
+    if (value === '') {
+      setPassword('');
+      setDisplayPassword('');
+      return;
+    }
+  
+    // Si borraron múltiples caracteres (por selección + borrar)
+    if (value.length < password.length) {
+      const newLength = value.length;
+      setPassword(password.slice(0, newLength));
+      setDisplayPassword("•".repeat(newLength));
+      return;
+    }
+  
+    // Si escribieron un carácter nuevo
+    const lastChar = value.slice(-1);
+    const newPassword = password + lastChar;
+  
+    setPassword(newPassword);
+    setDisplayPassword("•".repeat(password.length) + lastChar);
+  
+    // Limpiar timeout anterior
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  
+    // Programar nuevo timeout para ocultar el último carácter
+    timeoutRef.current = setTimeout(() => {
+      setDisplayPassword("•".repeat(newPassword.length));
+    }, 300);
+  };
+    
     const [user, setUser] = useState("");
 
     const [error, setError] = useState(false)
-
-    const handleChange = (e : any) => {
-        const value = e.target.value; //e es el valor de todo el input
-
-        if(value.slice(-1) === "•" || value.slice(-1) === ""){ //revisa si el ultimo caracter de la contraseña es un punto
-        //                                                      (al tener mas de un valor le pone un punto con el backspace) o un espacio vacio
-            setPassword(password.slice(0, -1));  //elimina el ultimo caracter
-            setDisplayPassword(displayPassword.slice(0, -1));  
-        } else{
-            const lastChar = value.slice(-1); // Obtiene el último carácter ingresado
-            setPassword(password + lastChar);
-            setDisplayPassword("•".repeat(password.length) + lastChar);
-
-            // Oculta el último carácter después de 500ms
-            setTimeout(() => {
-                setDisplayPassword("•".repeat(password.length + 1));
-            }, 500);
-        }
-    };
-
     const handleChangeUser = (e : any) => {
         const value = e.target.value; //e es el valor de todo el input
 
