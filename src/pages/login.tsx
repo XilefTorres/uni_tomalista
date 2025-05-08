@@ -90,7 +90,7 @@ export default function Login({setLogin} : LoginProps) {
         <>
             <div className="flex flex-col gap-5 justify-center items-center h-screen">
                 <img className="size-30" 
-                src="src/assets/conta-logo.png"></img>
+                src="/conta-logo.png"></img>
                 
                 <div className="bg-white min-w-2/6 h-3/6 min-h-90 rounded-4xl
                                 grid grid-cols-1">
