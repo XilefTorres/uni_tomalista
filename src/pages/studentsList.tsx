@@ -1,8 +1,7 @@
 import { useState } from "react"
 import DisplayStudents from "../components/displayStudents"
-import { ClassesDB, GroupsDB, StudentsDB } from "../db/classDB"
+import { ClassesDB, StudentsDB } from "../db/classDB"
 import ReactModal from "react-modal"
-import Groups from "./groups"
 
 type StudentsListprops = {
     setOpenList: React.Dispatch<React.SetStateAction<boolean>>
